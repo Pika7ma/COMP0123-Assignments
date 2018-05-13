@@ -34,8 +34,8 @@ class LogisticRegression(object):
 
     def _init_theta(self):
         self.theta = self.seed_rng.uniform(
-            -np.sqrt(6 / self.feature_num + 1),
-            np.sqrt(6 / self.feature_num + 1),
+            -np.sqrt(6 / (self.feature_num + 1)),
+            np.sqrt(6 / (self.feature_num + 1)),
             self.feature_num + 1)
 
     @staticmethod
@@ -58,9 +58,10 @@ class LogisticRegression(object):
         # see whether it converges or not
         return (np.abs(new_theta - self.theta) < delta).all() or ite > 2e5
 
-    def fit(self, learning_rate=1e-7, batch_size=32, stop_delta=1e-8):
+    def fit(self, learning_rate=1e-6, batch_size=64, stop_delta=3e-6):
         self._init_theta()
-        batch_idx = self.seed_rng.choice(len(self.data['train_dat']), batch_size)
+        batch_idx = self.seed_rng.choice(len(self.data['train_dat']), batch_size, replace=False)
+        print(batch_idx)
         new_theta = self.compute_loss(self.data['train_dat'][batch_idx], self.data['train_cls'][batch_idx]) * learning_rate
         ite = 0
         # loop until convergence
