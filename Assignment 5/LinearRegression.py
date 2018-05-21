@@ -104,7 +104,6 @@ class LinearRegression(object):
             ite += 1
 
         plt.style.use('ggplot')
-        plt.figure('K Nearest Neighbour')
         plt.plot(np.arange(ite), a, lw=1, color='r')
         plt.savefig('plot.png', dpi=128)
 

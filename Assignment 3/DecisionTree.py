@@ -20,15 +20,19 @@ class DecisionTree(object):
         )
         self.root = dict()
 
+    # unified calling interface
     def build_tree(self):
         self._build_tree(self.root, self.train_dat)
 
+    # all trees should implement this tree-building algorithm
     def _build_tree(self, root, dat):
         raise NotImplementedError
 
+    # predict a single row in data
     def predict(self, row):
         raise NotImplementedError
 
+    # test all data in the testing set
     def test(self):
         accuracy = list()
         for _, row in self.test_dat.iterrows():
@@ -36,6 +40,7 @@ class DecisionTree(object):
         print(accuracy)
         print(np.mean(accuracy))
 
+    # decide which feature to use for classification
     def feature_decision(self, dat):
         raise NotImplementedError
 
@@ -162,7 +167,7 @@ class CARTDecisionTree(DecisionTree):
                 for unique_val in dat[col_name].unique():
                     inner_gini_dict[unique_val] = self.compute_gini(dat[dat[col_name] == unique_val], dat[dat[col_name] != unique_val])
             else:
-                vals = np.sort(cart.train_dat[col_name].unique())
+                vals = np.sort(self.train_dat[col_name].unique())
                 for val1, val2 in zip(vals[:-1], vals[1:]):
                     mean = (val1 + val2) / 2
                     inner_gini_dict[mean] = self.compute_gini(dat[dat[col_name] < mean], dat[dat[col_name] >= mean])
@@ -177,9 +182,8 @@ class CARTDecisionTree(DecisionTree):
                     min_gini = gini
         return ret_col_name, ret_split_pos
 
-
 if __name__ == '__main__':
-    id3 = ID3DecisionTree('./data/Watermelon-train2.csv', './data/Watermelon-test2.csv')
+    id3 = ID3DecisionTree('./data/Watermelon-train1.csv', './data/Watermelon-test1.csv')
     id3.build_tree()
     id3.test()
     cart = CARTDecisionTree('./data/Watermelon-train2.csv', './data/Watermelon-test2.csv')
